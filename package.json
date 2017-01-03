@@ -1,0 +1,23 @@
+{
+  "name": "holoweb",
+  "version": "0.0.1",
+  "description": "A web framework for creating holograms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hologram",
+    "holoweb",
+    "3d"
+  ],
+  "author": "Nemlaghi Bechir",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^13.1.1",
+    "detector-webgl": "^2.0.0",
+    "three": "^0.82.1",
+    "three-loaders-collada": "^1.0.1"
+  }
+}

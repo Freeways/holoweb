@@ -1,0 +1,1 @@
+browserify index.js -s 'HOLOWEB' -o dist/holoweb.js
