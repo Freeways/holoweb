@@ -4,7 +4,6 @@ var configs = {
         faces: 4,
         reverseHorizental: 0,
         reverseVertical: 1,
-        step: 90,//deprecated
         height: 400,
         width: 800,
         base: 100,
@@ -24,7 +23,6 @@ var configurator = function (config, monitor) {
         c = config.setup;
     }
     
-    console.log(monitor);
     var step = 2 * Math.PI / c.faces;
     var deg2rad = Math.PI / 180;
     var h = c.height || 400;

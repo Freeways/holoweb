@@ -1,7 +1,7 @@
 var configurator = require('./configurator');
 var Detector = window.Detector = require("detector-webgl");
 var THREE = window.THREE = require("three");
-//var collada = require('three-loaders-collada')(THREE);
+var collada = require('three-loaders-collada')(THREE);
 var W = window.innerWidth;
 var H = window.innerHeight;
 

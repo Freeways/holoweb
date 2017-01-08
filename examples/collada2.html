@@ -27,13 +27,6 @@
 			loader.options.convertUpAxis = true;
 			loader.load( './models/collada/airplane.dae', function ( collada ) {
 				dae = collada.scene;
-				dae.traverse( function ( child ) {
-					if ( child instanceof THREE.SkinnedMesh ) {
-						var animation = new THREE.Animation( child, child.geometry.animation );
-						animation.play();
-					}
-				} );
-
 				dae.scale.x = dae.scale.y = dae.scale.z = 20;
 				dae.rotation.x = 3 * Math.PI/2;
 				dae.rotation.y = 3 * Math.PI/2;
