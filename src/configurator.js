@@ -11,24 +11,32 @@ var configs = {
     }
 }
 var configurator = function (config, monitor) {
+    if(typeof config === "function")
+        return config(monitor);
     var c = {};//curent config
     var views = [];
-    if (!config) config = {model: "pyramid"};
-    if (!config.model && !config.setup)
-        config.model = "pyramid";
+    if (!config){
+        config = {model: "pyramid"};
+        console.warn('The Configuration was not found, defaulting to Pyramid display.');
+    }
     if (!config.setup) {
-        c = configs[config.model] ? configs[config.model] : configs.pyramid;
-        console.warn('The Configuration `' + config.model + '` was not found, defaulting to Pyramid display.');
+        if(!configs[config.model]){
+            config = {model: "pyramid"};
+            console.warn('The Configuration `' + config.model + '` was not found, defaulting to Pyramid display.');
+        }
+        c = configs[config.model];
     } else {
-        c = config.setup;
+        for(var key in config.setup){
+            c[key] = config.setup[key];
+        }
     }
     
     var step = 2 * Math.PI / c.faces;
     var deg2rad = Math.PI / 180;
-    var h = c.height || 400;
-    var w = c.width || 800;//unused
-    var b = c.base || 100;
-    var a = c.angle || 45;
+    var h = c.height;
+    var w = c.width;//unused
+    var b = c.base;
+    var a = c.angle;
     var H = monitor.H || 600;
     var W = monitor.W ||800;
 
