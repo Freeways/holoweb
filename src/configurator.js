@@ -50,8 +50,13 @@ var configurator = function (config, monitor) {
         y = y / H;
         height = height / H;
         width = width / W;
-        up = [cx, cy, 0];
-        eye = [0, 300, 1800];
+        if(c.reverseHorizental){
+            up = [1, cy, 0];
+            eye = [cy * 1800, 0, cx * 1800];
+        } else {
+            up = [cx, cy, 0];
+            eye = [0, 0, 1800];
+        }
         fov = 60;
         views.push(new View(x, y, up, width, height, eye, fov));
     }

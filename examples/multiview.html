@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>HoloWeb</title>
+        <style>
+            body { margin: 0; }
+            canvas { width: 100%; height: 100% }
+        </style>
+        <script src="../dist/holoweb.js"></script>
+    </head>
+    <body>
+        <script>
+			var config = {
+				faces: 4,
+				reverseHorizental: 1,
+				reverseVertical: 1,
+				height: 400,
+				width: 800,
+				base: 100,
+				angle: 45
+			}
+            var holoweb = new HoloWeb(null,config);
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.z += 0.01;
+            }
+           
+			var geometry = new THREE.ConeGeometry( 300, 200, 32 );
+			var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+			var mesh = new THREE.Mesh( geometry, material );
+			holoweb.add(mesh);
+            animate();
+        </script>
+    </body>
+</html>
