@@ -7,6 +7,12 @@ var KeyFrameAnimation = require('./vendors/loaders/collada/KeyFrameAnimation')(T
 var W = window.innerWidth;
 var H = window.innerHeight;
 
+var canvas = document.createElement('canvas');
+var ctx = canvas.getContext('webgl2');
+var isWebGL2 = !!ctx;
+
+delete canvas;
+
 var HoloWeb = function (selector, config) {
     this.selector = selector || window.document.body;
     this.config = config;
@@ -36,12 +42,21 @@ var HoloWeb = function (selector, config) {
             camera.up.z = view.up[ 2 ];
             view.camera = camera;
         }
-
-        renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(W, H);
-        container.appendChild(renderer.domElement);
-    }
+		if (!isWebGL2){
+			renderer = new THREE.WebGLRenderer({antialias: true});
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(W, H);
+			container.appendChild(renderer.domElement);
+		}else{
+			renderer = new THREE.WebGL2Renderer({antialias: true});
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(W, H);
+			container.appendChild(renderer.domElement);
+		}
+		if (!ctx) {
+		console.log('your browser does not support WebGL');
+		}
+	}
     function updateSize() {
         if (windowWidth != W || windowHeight != H) {
             windowWidth = W;
