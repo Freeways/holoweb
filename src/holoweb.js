@@ -29,6 +29,9 @@ var HoloWeb = function (selector, config) {
     this.add = function(mesh){
         return this.scene.add(mesh);
     }
+     this.remove = function(mesh){
+        return this.scene.remove(mesh);
+    }
     
     function init(container) {
         for (var i = 0; i < views.length; ++i) {
