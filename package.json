@@ -15,8 +15,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^13.1.1",
-    "detector-webgl": "^2.0.0",
+    "browserify": "^13.3.0",
     "three": "^0.82.1",
     "three-loaders-collada": "^1.0.1"
   }

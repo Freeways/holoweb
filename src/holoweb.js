@@ -1,5 +1,4 @@
 var configurator = require('./configurator');
-var Detector = window.Detector = require("detector-webgl");
 var THREE = window.THREE = require("three");
 var collada = require('three-loaders-collada')(THREE);
 var animation = require('./vendors/loaders/collada/Animation')(THREE);
@@ -10,14 +9,17 @@ var H = window.innerHeight;
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('webgl2');
 var isWebGL2 = !!ctx;
-
+if(!isWebGL2)
+    ctx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 delete canvas;
 
 var HoloWeb = function (selector, config) {
     this.selector = selector || window.document.body;
     this.config = config;
-    if (!Detector)
+    if (!ctx) {
         return console.error("your browser does not support WebGL");
+    }
+
     var renderer;
     var windowWidth, windowHeight;
     var views = configurator(this.config, {H: H, W: W});
@@ -46,19 +48,17 @@ var HoloWeb = function (selector, config) {
             view.camera = camera;
         }
 		if (!isWebGL2){
+            console.warn('WebGl2 not supported, using WebGL.');
 			renderer = new THREE.WebGLRenderer({antialias: true});
-			renderer.setPixelRatio(window.devicePixelRatio);
-			renderer.setSize(W, H);
-			container.appendChild(renderer.domElement);
 		}else{
+            var WebGL2Renderer = require('./vendors/renderer/WebGL2Renderer')(THREE);
+            console.log('WebGl2 selected!');
 			renderer = new THREE.WebGL2Renderer({antialias: true});
-			renderer.setPixelRatio(window.devicePixelRatio);
-			renderer.setSize(W, H);
-			container.appendChild(renderer.domElement);
 		}
-		if (!ctx) {
-		console.log('your browser does not support WebGL');
-		}
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(W, H);
+        container.appendChild(renderer.domElement);
+		
 	}
     function updateSize() {
         if (windowWidth != W || windowHeight != H) {
