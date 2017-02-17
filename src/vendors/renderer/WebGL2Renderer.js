@@ -135,6 +135,8 @@ module.exports = function(THREE){
 
             _pixelRatio = 1,
 
+            _scissor = new THREE.Vector4( 0, 0, _width, _height ),
+            _scissorTest = false,
             _viewport = new THREE.Vector4( 0, 0, _width, _height );
 
         var extensions = WebGLExtensions( gl );
@@ -226,9 +228,24 @@ module.exports = function(THREE){
 
         }
 
+        function setScissor( x, y, width, height ) {
+
+            state.scissor( _scissor.set( x, y, width, height ) );
+
+        };
+
+        function setScissorTest( boolean ) {
+
+            state.setScissorTest( _scissorTest = boolean );
+
+        };
+
         return {
             domElement: _canvas,
 
+            setViewport: setViewport,
+            setScissor: setScissor,
+            setScissorTest: setScissorTest,
             clear: clear,
             setPixelRatio: setPixelRatio,
             setSize: setSize,
