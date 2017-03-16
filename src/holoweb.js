@@ -4,8 +4,6 @@ require('./vendors/renderer/WebGL2Renderer')(THREE);
 var collada = require('three-loaders-collada')(THREE);
 var animation = require('./vendors/loaders/collada/Animation')(THREE);
 var KeyFrameAnimation = require('./vendors/loaders/collada/KeyFrameAnimation')(THREE);
-var W = window.innerWidth;
-var H = window.innerHeight;
 
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('webgl2');
@@ -16,17 +14,21 @@ delete canvas;
 
 var HoloWeb = function (selector, config) {
   this.selector = selector || window.document.body;
+  var W = this.selector.clientWidth;
+  var H = this.selector.clientHeight;
+
   this.config = config;
   if (!ctx) {
     return console.error("your browser does not support WebGL");
   }
 
   var renderer;
-  var windowWidth, windowHeight;
+  var windowWidth = W, windowHeight = H;
   var views = configurator(this.config, {H: H, W: W});
   var scene = new THREE.Scene();
   this.scene = scene;
   init(this.selector);
+  updateSize();
   animate();
 
   this.add = function (mesh) {
@@ -37,6 +39,21 @@ var HoloWeb = function (selector, config) {
   }
 
   function init(container) {
+    container.onresize = function () {
+      W = container.clientWidth;
+      H = container.clientHeight;
+      views = configurator(this.config, {H: H, W: W});
+      setupCamera()
+      updateSize();
+    };
+
+    setupCamera();
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(W, H);
+    container.appendChild(renderer.domElement);
+  }
+  function setupCamera() {
     for (var i = 0; i < views.length; ++i) {
       var view = views[i];
       camera = new THREE.PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 1, 10000);
@@ -48,17 +65,6 @@ var HoloWeb = function (selector, config) {
       camera.up.z = view.up[ 2 ];
       view.camera = camera;
     }
-    //if (!isWebGL2){
-    //    console.warn('WebGl2 not supported, using WebGL.');
-    renderer = new THREE.WebGLRenderer({antialias: true});
-    //}else{
-    //    var WebGL2Renderer = require('./vendors/renderer/WebGL2Renderer')(THREE);
-    //    console.log('WebGl2 selected!');
-    //	renderer = new THREE.WebGL2Renderer();
-    //}
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(W, H);
-    container.appendChild(renderer.domElement);
   }
   function updateSize() {
     if (windowWidth != W || windowHeight != H) {
@@ -72,7 +78,6 @@ var HoloWeb = function (selector, config) {
     render();
   }
   function render() {
-    updateSize();
     for (var i = 0; i < views.length; ++i) {
       view = views[i];
       camera = view.camera;
