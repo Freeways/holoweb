@@ -11,25 +11,25 @@
     </head>
     <body>
         <script>
-			var config = {
-				faces: 4,
-				reverseHorizental: 1,
-				reverseVertical: 1,
-				height: 400,
-				width: 800,
-				base: 100,
-				angle: 45
-			}
-            var holoweb = new HoloWeb(null,config);
-            function animate() {
-                requestAnimationFrame(animate);
-                mesh.rotation.z += 0.01;
+            var config = {
+              faces: 4,
+              reverseHorizental: 1,
+              reverseVertical: 1,
+              height: 400,
+              width: 800,
+              base: 100,
+              angle: 45
             }
-           
-			var geometry = new THREE.ConeGeometry( 300, 200, 32 );
-			var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-			var mesh = new THREE.Mesh( geometry, material );
-			holoweb.add(mesh);
+            var holoweb = new HoloWeb(null, config);
+            function animate() {
+              requestAnimationFrame(animate);
+              mesh.rotation.z += 0.01;
+            }
+
+            var geometry = new THREE.ConeGeometry(300, 200, 32);
+            var material = new THREE.MeshBasicMaterial({color: 0xffff00});
+            var mesh = new THREE.Mesh(geometry, material);
+            holoweb.add(mesh);
             animate();
         </script>
     </body>

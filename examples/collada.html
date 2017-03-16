@@ -14,24 +14,24 @@
             var holoweb = new HoloWeb();
             var dae;
 
-			holoweb.add( new THREE.AmbientLight( 0xcccccc ) );
-			
+            holoweb.add(new THREE.AmbientLight(0xcccccc));
+
             function animate() {
-                requestAnimationFrame(animate);
-                dae.rotation.y += 0.01;
-                dae.rotation.z += 0.05;
+              requestAnimationFrame(animate);
+              dae.rotation.y += 0.01;
+              dae.rotation.z += 0.05;
             }
 
-			var loader = new THREE.ColladaLoader();
-			loader.options.convertUpAxis = true;
-			loader.load( './models/collada/tree/tree.dae', function ( collada ) {
-				dae = collada.scene;
-				dae.scale.x = dae.scale.y = dae.scale.z = 1;
-				dae.updateMatrix();
-				holoweb.add(dae);
-				animate();
-			} );
-            
+            var loader = new THREE.ColladaLoader();
+            loader.options.convertUpAxis = true;
+            loader.load('./models/collada/tree/tree.dae', function (collada) {
+              dae = collada.scene;
+              dae.scale.x = dae.scale.y = dae.scale.z = 1;
+              dae.updateMatrix();
+              holoweb.add(dae);
+              animate();
+            });
+
         </script>
     </body>
 </html>

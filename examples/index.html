@@ -14,8 +14,8 @@
             var holoweb = new HoloWeb();
 
             function animate() {
-                requestAnimationFrame(animate);
-                mesh.rotation.y += 0.01;
+              requestAnimationFrame(animate);
+              mesh.rotation.y += 0.01;
             }
 
             var texture = new THREE.TextureLoader().load('images/crate.gif');
@@ -23,7 +23,7 @@
             var material = new THREE.MeshBasicMaterial({map: texture});
             mesh = new THREE.Mesh(geometry, material);
             holoweb.add(mesh);
-            
+
             animate();
         </script>
     </body>

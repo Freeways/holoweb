@@ -14,34 +14,34 @@
             var holoweb = new HoloWeb();
             var dae;
 
-			// Lights
-			holoweb.add( new THREE.AmbientLight( 0xffffff ) );
-            holoweb.add( new THREE.DirectionalLight( 0xeeeeee ) );
+            // Lights
+            holoweb.add(new THREE.AmbientLight(0xffffff));
+            holoweb.add(new THREE.DirectionalLight(0xeeeeee));
 
-			var clock = new THREE.Clock();
+            var clock = new THREE.Clock();
             function animate() {
-                requestAnimationFrame(animate);
-                dae.position.x += 5;
-                THREE.AnimationHandler.update( clock.getDelta() );
+              requestAnimationFrame(animate);
+              dae.position.x += 5;
+              THREE.AnimationHandler.update(clock.getDelta());
             }
 
-			var loader = new THREE.ColladaLoader();
+            var loader = new THREE.ColladaLoader();
             loader.options.convertUpAxis = true;
-            loader.load( './models/collada/monster/monster.dae', function ( collada ) {
-                dae = collada.scene;
-                dae.traverse( function ( child ) {
-                    if ( child instanceof THREE.SkinnedMesh ) {
-                        var animation = new THREE.Animation( child, child.geometry.animation );
-                        animation.play();
-                    }
-                } );
-                dae.scale.x = dae.scale.y = dae.scale.z = 0.6;
-                dae.position.x = -1500;
-                dae.updateMatrix();
-				holoweb.add(dae);
-				animate();
-			} );
-            
+            loader.load('./models/collada/monster/monster.dae', function (collada) {
+              dae = collada.scene;
+              dae.traverse(function (child) {
+                if (child instanceof THREE.SkinnedMesh) {
+                  var animation = new THREE.Animation(child, child.geometry.animation);
+                  animation.play();
+                }
+              });
+              dae.scale.x = dae.scale.y = dae.scale.z = 0.6;
+              dae.position.x = -1500;
+              dae.updateMatrix();
+              holoweb.add(dae);
+              animate();
+            });
+
         </script>
     </body>
 </html>

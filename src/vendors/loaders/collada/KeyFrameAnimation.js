@@ -6,235 +6,230 @@
  * @author erik kitson
  */
 
-module.exports = function(THREE){
-	AnimationHandler = require('./AnimationHandler')(THREE);
+module.exports = function (THREE) {
+  AnimationHandler = require('./AnimationHandler')(THREE);
 
-	THREE.KeyFrameAnimation = function ( data ) {
+  THREE.KeyFrameAnimation = function (data) {
 
-		this.root = data.node;
-		this.data = THREE.AnimationHandler.init( data );
-		this.hierarchy = THREE.AnimationHandler.parse( this.root );
-		this.currentTime = 0;
-		this.timeScale = 0.001;
-		this.isPlaying = false;
-		this.isPaused = true;
-		this.loop = true;
+    this.root = data.node;
+    this.data = THREE.AnimationHandler.init(data);
+    this.hierarchy = THREE.AnimationHandler.parse(this.root);
+    this.currentTime = 0;
+    this.timeScale = 0.001;
+    this.isPlaying = false;
+    this.isPaused = true;
+    this.loop = true;
 
-		// initialize to first keyframes
+    // initialize to first keyframes
 
-		for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+    for (var h = 0, hl = this.hierarchy.length; h < hl; h++) {
 
-			var keys = this.data.hierarchy[ h ].keys,
-				sids = this.data.hierarchy[ h ].sids,
-				obj = this.hierarchy[ h ];
+      var keys = this.data.hierarchy[ h ].keys,
+          sids = this.data.hierarchy[ h ].sids,
+          obj = this.hierarchy[ h ];
 
-			if ( keys.length && sids ) {
+      if (keys.length && sids) {
 
-				for ( var s = 0; s < sids.length; s ++ ) {
+        for (var s = 0; s < sids.length; s++) {
 
-					var sid = sids[ s ],
-						next = this.getNextKeyWith( sid, h, 0 );
+          var sid = sids[ s ],
+              next = this.getNextKeyWith(sid, h, 0);
 
-					if ( next ) {
+          if (next) {
 
-						next.apply( sid );
+            next.apply(sid);
 
-					}
+          }
 
-				}
+        }
 
-				obj.matrixAutoUpdate = false;
-				this.data.hierarchy[ h ].node.updateMatrix();
-				obj.matrixWorldNeedsUpdate = true;
+        obj.matrixAutoUpdate = false;
+        this.data.hierarchy[ h ].node.updateMatrix();
+        obj.matrixWorldNeedsUpdate = true;
 
-			}
+      }
 
-		}
+    }
 
-	};
+  };
 
-	THREE.KeyFrameAnimation.prototype = {
+  THREE.KeyFrameAnimation.prototype = {
+    constructor: THREE.KeyFrameAnimation,
+    play: function (startTime) {
 
-		constructor: THREE.KeyFrameAnimation,
+      this.currentTime = startTime !== undefined ? startTime : 0;
 
-		play: function ( startTime ) {
+      if (this.isPlaying === false) {
 
-			this.currentTime = startTime !== undefined ? startTime : 0;
+        this.isPlaying = true;
 
-			if ( this.isPlaying === false ) {
+        // reset key cache
 
-				this.isPlaying = true;
+        var h, hl = this.hierarchy.length,
+            object,
+            node;
 
-				// reset key cache
+        for (h = 0; h < hl; h++) {
 
-				var h, hl = this.hierarchy.length,
-					object,
-					node;
+          object = this.hierarchy[ h ];
+          node = this.data.hierarchy[ h ];
 
-				for ( h = 0; h < hl; h ++ ) {
+          if (node.animationCache === undefined) {
 
-					object = this.hierarchy[ h ];
-					node = this.data.hierarchy[ h ];
+            node.animationCache = {};
+            node.animationCache.prevKey = null;
+            node.animationCache.nextKey = null;
+            node.animationCache.originalMatrix = object.matrix;
 
-					if ( node.animationCache === undefined ) {
+          }
 
-						node.animationCache = {};
-						node.animationCache.prevKey = null;
-						node.animationCache.nextKey = null;
-						node.animationCache.originalMatrix = object.matrix;
+          var keys = this.data.hierarchy[ h ].keys;
 
-					}
+          if (keys.length > 1) {
 
-					var keys = this.data.hierarchy[ h ].keys;
+            node.animationCache.prevKey = keys[ 0 ];
+            node.animationCache.nextKey = keys[ 1 ];
 
-					if ( keys.length > 1 ) {
+            this.startTime = Math.min(keys[ 0 ].time, this.startTime);
+            this.endTime = Math.max(keys[ keys.length - 1 ].time, this.endTime);
 
-						node.animationCache.prevKey = keys[ 0 ];
-						node.animationCache.nextKey = keys[ 1 ];
+          }
 
-						this.startTime = Math.min( keys[ 0 ].time, this.startTime );
-						this.endTime = Math.max( keys[ keys.length - 1 ].time, this.endTime );
+        }
 
-					}
+        this.update(0);
 
-				}
+      }
 
-				this.update( 0 );
+      this.isPaused = false;
+    },
+    stop: function () {
 
-			}
+      this.isPlaying = false;
+      this.isPaused = false;
 
-			this.isPaused = false;
-		},
+      // reset JIT matrix and remove cache
 
-		stop: function () {
+      for (var h = 0; h < this.data.hierarchy.length; h++) {
 
-			this.isPlaying = false;
-			this.isPaused  = false;
+        var obj = this.hierarchy[ h ];
+        var node = this.data.hierarchy[ h ];
 
-			// reset JIT matrix and remove cache
+        if (node.animationCache !== undefined) {
 
-			for ( var h = 0; h < this.data.hierarchy.length; h ++ ) {
+          var original = node.animationCache.originalMatrix;
 
-				var obj = this.hierarchy[ h ];
-				var node = this.data.hierarchy[ h ];
+          original.copy(obj.matrix);
+          obj.matrix = original;
 
-				if ( node.animationCache !== undefined ) {
+          delete node.animationCache;
 
-					var original = node.animationCache.originalMatrix;
+        }
 
-					original.copy( obj.matrix );
-					obj.matrix = original;
+      }
 
-					delete node.animationCache;
+    },
+    update: function (delta) {
 
-				}
+      if (this.isPlaying === false)
+        return;
 
-			}
+      this.currentTime += delta * this.timeScale;
 
-		},
+      //
 
-		update: function ( delta ) {
+      var duration = this.data.length;
 
-			if ( this.isPlaying === false ) return;
+      if (this.loop === true && this.currentTime > duration) {
 
-			this.currentTime += delta * this.timeScale;
+        this.currentTime %= duration;
 
-			//
+      }
 
-			var duration = this.data.length;
+      this.currentTime = Math.min(this.currentTime, duration);
 
-			if ( this.loop === true && this.currentTime > duration ) {
+      for (var h = 0, hl = this.hierarchy.length; h < hl; h++) {
 
-				this.currentTime %= duration;
+        var object = this.hierarchy[ h ];
+        var node = this.data.hierarchy[ h ];
 
-			}
+        var keys = node.keys,
+            animationCache = node.animationCache;
 
-			this.currentTime = Math.min( this.currentTime, duration );
 
-			for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+        if (keys.length) {
 
-				var object = this.hierarchy[ h ];
-				var node = this.data.hierarchy[ h ];
+          var prevKey = animationCache.prevKey;
+          var nextKey = animationCache.nextKey;
 
-				var keys = node.keys,
-					animationCache = node.animationCache;
+          if (nextKey.time <= this.currentTime) {
 
+            while (nextKey.time < this.currentTime && nextKey.index > prevKey.index) {
 
-				if ( keys.length ) {
+              prevKey = nextKey;
+              nextKey = keys[ prevKey.index + 1 ];
 
-					var prevKey = animationCache.prevKey;
-					var nextKey = animationCache.nextKey;
+            }
 
-					if ( nextKey.time <= this.currentTime ) {
+            animationCache.prevKey = prevKey;
+            animationCache.nextKey = nextKey;
 
-						while ( nextKey.time < this.currentTime && nextKey.index > prevKey.index ) {
+          }
 
-							prevKey = nextKey;
-							nextKey = keys[ prevKey.index + 1 ];
+          if (nextKey.time >= this.currentTime) {
 
-						}
+            prevKey.interpolate(nextKey, this.currentTime);
 
-						animationCache.prevKey = prevKey;
-						animationCache.nextKey = nextKey;
+          } else {
 
-					}
+            prevKey.interpolate(nextKey, nextKey.time);
 
-					if ( nextKey.time >= this.currentTime ) {
+          }
 
-						prevKey.interpolate( nextKey, this.currentTime );
+          this.data.hierarchy[ h ].node.updateMatrix();
+          object.matrixWorldNeedsUpdate = true;
 
-					} else {
+        }
 
-						prevKey.interpolate( nextKey, nextKey.time );
+      }
 
-					}
+    },
+    getNextKeyWith: function (sid, h, key) {
 
-					this.data.hierarchy[ h ].node.updateMatrix();
-					object.matrixWorldNeedsUpdate = true;
+      var keys = this.data.hierarchy[ h ].keys;
+      key = key % keys.length;
 
-				}
+      for (; key < keys.length; key++) {
 
-			}
+        if (keys[ key ].hasTarget(sid)) {
 
-		},
+          return keys[ key ];
 
-		getNextKeyWith: function ( sid, h, key ) {
+        }
 
-			var keys = this.data.hierarchy[ h ].keys;
-			key = key % keys.length;
+      }
 
-			for ( ; key < keys.length; key ++ ) {
+      return keys[ 0 ];
 
-				if ( keys[ key ].hasTarget( sid ) ) {
+    },
+    getPrevKeyWith: function (sid, h, key) {
 
-					return keys[ key ];
+      var keys = this.data.hierarchy[ h ].keys;
+      key = key >= 0 ? key : key + keys.length;
 
-				}
+      for (; key >= 0; key--) {
 
-			}
+        if (keys[ key ].hasTarget(sid)) {
 
-			return keys[ 0 ];
+          return keys[ key ];
 
-		},
+        }
 
-		getPrevKeyWith: function ( sid, h, key ) {
+      }
 
-			var keys = this.data.hierarchy[ h ].keys;
-			key = key >= 0 ? key : key + keys.length;
+      return keys[ keys.length - 1 ];
 
-			for ( ; key >= 0; key -- ) {
+    }
 
-				if ( keys[ key ].hasTarget( sid ) ) {
-
-					return keys[ key ];
-
-				}
-
-			}
-
-			return keys[ keys.length - 1 ];
-
-		}
-
-	};
+  };
 }
