@@ -1,6 +1,5 @@
 var configurator = require('./configurator');
 var THREE = window.THREE = require("three");
-require('./vendors/renderer/WebGL2Renderer')(THREE);
 var collada = require('three-loaders-collada')(THREE);
 var animation = require('./vendors/loaders/collada/Animation')(THREE);
 var KeyFrameAnimation = require('./vendors/loaders/collada/KeyFrameAnimation')(THREE);
@@ -37,21 +36,27 @@ var HoloWeb = function (selector, config) {
   this.remove = function (mesh) {
     return this.scene.remove(mesh);
   }
+  this.clear = function () {
+    that = this;
+    that.scene.children.forEach(function (object) {
+      that.remove(object);
+    });
+  }
 
   function init(container) {
-    container.onresize = function () {
+    function resizeCanvas() {
       W = container.clientWidth;
       H = container.clientHeight;
       views = configurator(this.config, {H: H, W: W});
-      setupCamera()
+      setupCamera();
       updateSize();
-    };
-
+    }
     setupCamera();
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(W, H);
     container.appendChild(renderer.domElement);
+    window.onresize = resizeCanvas;
   }
   function setupCamera() {
     for (var i = 0; i < views.length; ++i) {
