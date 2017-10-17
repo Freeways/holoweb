@@ -12,14 +12,16 @@
     </head>
     <body>
         <script>
-            var config = {
-              faces: 4,
-              reverseHorizental: 1,
-              reverseVertical: 1,
-              height: 400,
-              width: 800,
-              base: 100,
-              angle: 45
+            var config = {model: 'pyramid', setup: {
+                faces: 4,
+                reverseHorizental: 1,
+                trueReflection: 1,
+                height: 400,
+                width: 800,
+                base: 100,
+                angle: 45,
+                precision: 8
+              }
             }
             var holoweb = new HoloWeb(null, config);
             function animate() {
@@ -30,8 +32,13 @@
             var geometry = new THREE.ConeGeometry(300, 200, 32);
             var material = new THREE.MeshBasicMaterial({color: 0xffff00});
             var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.y = 500;
             holoweb.add(mesh);
             animate();
+            window.onmousemove = function (e) {
+              mesh.position.x = 2 * (e.clientX - window.innerWidth / 2);
+              mesh.position.y = 3 * (window.innerHeight / 2 - e.clientY);
+            }
         </script>
     </body>
 </html>

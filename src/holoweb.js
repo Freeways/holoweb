@@ -22,12 +22,11 @@ var HoloWeb = function (selector, config) {
   }
 
   var renderer;
-  var windowWidth = W, windowHeight = H;
   var views = configurator(this.config, {H: H, W: W});
   var scene = new THREE.Scene();
   this.scene = scene;
   init(this.selector);
-  updateSize();
+  renderer.setSize(W, H);
   animate();
 
   this.add = function (mesh) {
@@ -49,11 +48,11 @@ var HoloWeb = function (selector, config) {
       H = container.clientHeight;
       views = configurator(this.config, {H: H, W: W});
       setupCamera();
-      updateSize();
+      renderer.setSize(W, H);
     }
     setupCamera();
     renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(4);
     renderer.setSize(W, H);
     container.appendChild(renderer.domElement);
     window.onresize = resizeCanvas;
@@ -71,13 +70,6 @@ var HoloWeb = function (selector, config) {
       view.camera = camera;
     }
   }
-  function updateSize() {
-    if (windowWidth != W || windowHeight != H) {
-      windowWidth = W;
-      windowHeight = H;
-      renderer.setSize(windowWidth, windowHeight);
-    }
-  }
   function animate() {
     requestAnimationFrame(animate);
     render();
@@ -87,16 +79,21 @@ var HoloWeb = function (selector, config) {
       view = views[i];
       camera = view.camera;
       camera.lookAt(scene.position);
-      var x = Math.floor(windowWidth * view.x);
-      var y = Math.floor(windowHeight * view.y);
-      var width = Math.floor(windowWidth * view.width);
-      var height = Math.floor(windowHeight * view.height);
-      renderer.setViewport(x, y, width, height);
-      renderer.setScissor(x, y, width, height);
-      renderer.setScissorTest(true);
-      camera.aspect = width / height;
+      //renderer.setClearColor(4304 + 4190000 * i, 0.5);
+      renderer.setViewport(view.x, view.y, view.width, view.height);
+      camera.aspect = 1;
       camera.updateProjectionMatrix();
-      renderer.render(scene, camera);
+      if (i === 0) {
+        renderer.setScissor(view.x, view.y, view.width, view.height);
+        renderer.setScissorTest(true);
+        renderer.render(scene, camera);
+      }
+      else
+        view.parts.forEach(function (part) {
+          renderer.setScissor(Math.floor(part[0]), Math.floor(part[1]), Math.ceil(part[2]), Math.ceil(part[3]));
+          renderer.setScissorTest(true);
+          renderer.render(scene, camera);
+        });
     }
   }
 }

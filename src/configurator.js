@@ -2,27 +2,44 @@ var View = require('./view');
 var configs = {
   pyramid: {
     faces: 4,
-    reverseHorizental: 0,
+    trueReflection: 0,
     reverseVertical: 1,
     height: 400,
-    width: 800,
     base: 100,
-    angle: 45
+    angle: 45,
+    precision: 8
   }
+};
+function coord2canvas(x1, y1, x2, y2) {
+  var w = x2 - x1;
+  var h = y2 - y1;
+  if (w > 0) {
+    x2 = w;
+  } else {
+    x1 = x2;
+    x2 = -w;
+  }
+  if (h > 0) {
+    y2 = h;
+  } else {
+    y1 = y2;
+    y2 = -h;
+  }
+  return [Math.floor(x1), Math.floor(y1), Math.ceil(x2), Math.ceil(y2)];
 }
 var configurator = function (config, monitor) {
   if (typeof config === "function")
     return config(monitor);
-  var c = {};//curent config
+  var c = {};
   var views = [];
   if (!config) {
     config = {model: "pyramid"};
-    console.warn('The Configuration was not found, defaulting to Pyramid display.');
+    console.warn('The Configuration was not found, defaulting to pyramid display.');
   }
   if (!config.setup) {
     if (!configs[config.model]) {
       config = {model: "pyramid"};
-      console.warn('The Configuration `' + config.model + '` was not found, defaulting to Pyramid display.');
+      console.warn('The Configuration `' + config.model + '` was not found, defaulting to pyramid display.');
     }
     c = configs[config.model];
   } else {
@@ -31,36 +48,40 @@ var configurator = function (config, monitor) {
     }
   }
 
-  var step = 2 * Math.PI / c.faces;
-  var deg2rad = Math.PI / 180;
-  var h = c.height;
-  var w = c.width;//unused
-  var b = c.base;
-  var a = c.angle;
-  var H = monitor.H || 600;
-  var W = monitor.W || 800;
-
+  var step = Math.PI / c.faces,
+      pSide = c.height * Math.sin(c.angle * Math.PI / 180),
+      mSide = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - c.base) / 2,
+      optimium = pSide < mSide ? pSide : mSide,
+      width = height = 2 * optimium + c.base,
+      x = monitor.W / 2 - c.base / 2 - optimium,
+      y = monitor.H / 2 - c.base / 2 - optimium,
+      diagOp = Math.sqrt((optimium * optimium) + (optimium * optimium)),
+      diagBase = Math.sqrt((c.base / 2) * (c.base / 2) + (c.base / 2) * (c.base / 2));
+  
   for (var i = 0; i < c.faces; i++) {
-    pSide = h * Math.sin(a * deg2rad);
-    mSide = ((H * (H < W) || W) - b) / 2;
-    height = width = pSide < mSide ? pSide : mSide;
-    cx = Math.round(Math.cos(i * step) * 100) / 100;
-    cy = Math.round(Math.sin(i * step) * 100) / 100;
-    x = W / 2 - cx * b / 2 - width / 2 - cx * width / 2;
-    y = H / 2 + cy * b / 2 - height / 2 + cy * height / 2;
-    x = x / W;
-    y = y / H;
-    height = height / H;
-    width = width / W;
-    if (c.reverseHorizental) {
-      up = [1, cy, 0];
+    var parts = [];
+    cx = Math.round(Math.sin(i * 2 * step) * 100) / 100;
+    cy = Math.round(Math.cos(i * 2 * step) * 100) / 100;
+    console.log(cx, cy);
+    for (var j = 0; j < c.precision; j++) {
+      parts.push(
+          coord2canvas(
+              Math.sin((2 * i - 1) * step) * (j * diagOp / c.precision + diagBase) + monitor.W / 2,
+              Math.cos((2 * i - 1) * step) * (j * diagOp / c.precision + diagBase) + monitor.H / 2,
+              Math.sin((2 * i + 1) * step) * ((j + 1) * diagOp / c.precision + diagBase) + monitor.W / 2,
+              Math.cos((2 * i + 1) * step) * ((j + 1) * diagOp / c.precision + diagBase) + monitor.H / 2
+              )
+          )
+    }
+    if (c.trueReflection) {
+      up = [-cx, cy, 0];
       eye = [cy * 1800, 0, cx * 1800];
     } else {
-      up = [cx, cy, 0];
-      eye = [0, 0, 1800];
+      up = [-cx, cy, 0];
+      eye = [0, 500, 1800];
     }
     fov = 60;
-    views.push(new View(x, y, up, width, height, eye, fov));
+    views.push(new View(x, y, up, width, height, eye, fov, parts));
   }
   return views;
 }

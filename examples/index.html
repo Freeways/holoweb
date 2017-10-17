@@ -12,7 +12,16 @@
     </head>
     <body>
         <script>
-            var holoweb = new HoloWeb();
+            var holoweb = new HoloWeb(null, {setup: {
+                faces: 4,
+                trueReflection: 0,
+                reverseVertical: 1,
+                height: 400,
+                base: 20,
+                angle: 45,
+                precision: 8
+              }
+            });
 
             function animate() {
               requestAnimationFrame(animate);
@@ -26,6 +35,10 @@
             holoweb.add(mesh);
 
             animate();
+            window.onmousemove = function (e) {
+              mesh.position.x = 2 * (e.clientX - window.innerWidth / 2);
+              mesh.position.y = 3 * (window.innerHeight / 2 - e.clientY);
+            }
         </script>
     </body>
 </html>

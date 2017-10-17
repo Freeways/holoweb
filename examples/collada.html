@@ -28,6 +28,7 @@
             loader.load('./models/collada/tree/tree.dae', function (collada) {
               dae = collada.scene;
               dae.scale.x = dae.scale.y = dae.scale.z = 1;
+              dae.position.y = 450;
               dae.updateMatrix();
               holoweb.add(dae);
               animate();
