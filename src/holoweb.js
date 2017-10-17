@@ -52,7 +52,7 @@ var HoloWeb = function (selector, config) {
     }
     setupCamera();
     renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setPixelRatio(4);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(W, H);
     container.appendChild(renderer.domElement);
     window.onresize = resizeCanvas;
