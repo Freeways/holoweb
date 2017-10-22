@@ -8,4 +8,4 @@ var View = function (x, y, up, width, height, eye, fov, parts) {
   this.fov = fov || 60;
   this.parts = parts || [];
 }
-module.exports = View;
+export { View };

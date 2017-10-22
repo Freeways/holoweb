@@ -1,29 +1,27 @@
-var configurator = require('./configurator');
-var THREE = window.THREE = require("three");
-var collada = require('three-loaders-collada')(THREE);
-var animation = require('./vendors/loaders/collada/Animation')(THREE);
-var KeyFrameAnimation = require('./vendors/loaders/collada/KeyFrameAnimation')(THREE);
+import { configurator } from './configurator';
+import { Scene, PerspectiveCamera, WebGLRenderer} from 'three';
 
-var canvas = document.createElement('canvas');
-var ctx = canvas.getContext('webgl2');
-var isWebGL2 = !!ctx;
-if (!isWebGL2)
-  ctx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-delete canvas;
 
 var HoloWeb = function (selector, config) {
+  this.canvas = document.createElement('canvas');
+  var ctx = this.canvas.getContext('webgl2');
+  var isWebGL2 = !!ctx;
+  if (!isWebGL2)
+    ctx = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
+  delete this.canvas;
+  if (!ctx) {
+    return console.error("your browser does not support WebGL");
+  }
+
   this.selector = selector || window.document.body;
   var W = this.selector.clientWidth;
   var H = this.selector.clientHeight;
 
   this.config = config;
-  if (!ctx) {
-    return console.error("your browser does not support WebGL");
-  }
-
+  
   var renderer;
   var views = configurator(this.config, {H: H, W: W});
-  var scene = new THREE.Scene();
+  var scene = new Scene();
   this.scene = scene;
   init(this.selector);
   renderer.setSize(W, H);
@@ -51,7 +49,7 @@ var HoloWeb = function (selector, config) {
       renderer.setSize(W, H);
     }
     setupCamera();
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(W, H);
     container.appendChild(renderer.domElement);
@@ -60,7 +58,7 @@ var HoloWeb = function (selector, config) {
   function setupCamera() {
     for (var i = 0; i < views.length; ++i) {
       var view = views[i];
-      camera = new THREE.PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 1, 10000);
+      var camera = new PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 1, 10000);
       camera.position.x = view.eye[ 0 ];
       camera.position.y = view.eye[ 1 ];
       camera.position.z = view.eye[ 2 ];
@@ -76,8 +74,8 @@ var HoloWeb = function (selector, config) {
   }
   function render() {
     for (var i = 0; i < views.length; ++i) {
-      view = views[i];
-      camera = view.camera;
+      var view = views[i];
+      var camera = view.camera;
       camera.lookAt(scene.position);
       //renderer.setClearColor(4304 + 4190000 * i, 0.5);
       renderer.setViewport(view.x, view.y, view.width, view.height);
@@ -97,4 +95,4 @@ var HoloWeb = function (selector, config) {
     }
   }
 }
-module.exports = HoloWeb;
+export { HoloWeb };

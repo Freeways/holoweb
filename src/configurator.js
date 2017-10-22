@@ -1,4 +1,4 @@
-var View = require('./view');
+import { View } from './view';
 var configs = {
   pyramid: {
     faces: 4,
@@ -52,7 +52,8 @@ var configurator = function (config, monitor) {
       pSide = c.height * Math.sin(c.angle * Math.PI / 180),
       mSide = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - c.base) / 2,
       optimium = pSide < mSide ? pSide : mSide,
-      width = height = 2 * optimium + c.base,
+      height = 2 * optimium + c.base,
+      width = height,
       x = monitor.W / 2 - c.base / 2 - optimium,
       y = monitor.H / 2 - c.base / 2 - optimium,
       diagOp = Math.sqrt((optimium * optimium) + (optimium * optimium)),
@@ -60,9 +61,8 @@ var configurator = function (config, monitor) {
   
   for (var i = 0; i < c.faces; i++) {
     var parts = [];
-    cx = Math.round(Math.sin(i * 2 * step) * 100) / 100;
-    cy = Math.round(Math.cos(i * 2 * step) * 100) / 100;
-    console.log(cx, cy);
+    var cx = Math.round(Math.sin(i * 2 * step) * 100) / 100;
+    var cy = Math.round(Math.cos(i * 2 * step) * 100) / 100;
     for (var j = 0; j < c.precision; j++) {
       parts.push(
           coord2canvas(
@@ -73,6 +73,7 @@ var configurator = function (config, monitor) {
               )
           )
     }
+    var up = [], eye = [];
     if (c.trueReflection) {
       up = [-cx, cy, 0];
       eye = [cy * 1800, 0, cx * 1800];
@@ -80,9 +81,9 @@ var configurator = function (config, monitor) {
       up = [-cx, cy, 0];
       eye = [0, 500, 1800];
     }
-    fov = 60;
+    var fov = 60;
     views.push(new View(x, y, up, width, height, eye, fov, parts));
   }
   return views;
 }
-module.exports = configurator;
+export { configurator };
