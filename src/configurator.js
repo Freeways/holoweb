@@ -23,8 +23,7 @@ import { GuessConfig, Coord2Canvas } from './utils/check';
  * @returns {Array.<View>} - {@link view|read more about Views}
  */
 var configurator = function (config, monitor) {
-  var config = GuessConfig(config, monitor);
-  console.log(config)
+  config = GuessConfig(config, monitor);
   var views = [];
 
   var step = Math.PI / config.faces,
@@ -61,7 +60,7 @@ var configurator = function (config, monitor) {
       eye = [0, 500, 1800];
     }
     var fov = 60;
-    views.push(new View(x, y, up, width, height, eye, fov, parts));
+    views.push(new View(x, y, width, height, up, eye, fov, parts));
   }
   return views;
 }

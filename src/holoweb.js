@@ -60,12 +60,8 @@ var HoloWeb = function (selector, config) {
     for (var i = 0; i < views.length; ++i) {
       var view = views[i];
       var camera = new PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 1, 10000);
-      camera.position.x = view.eye[ 0 ];
-      camera.position.y = view.eye[ 1 ];
-      camera.position.z = view.eye[ 2 ];
-      camera.up.x = view.up[ 0 ];
-      camera.up.y = view.up[ 1 ];
-      camera.up.z = view.up[ 2 ];
+      camera.position.set(view.eye[0], view.eye[1], view.eye[2]);
+      camera.up.set(view.up[0], view.up[1], view.up[2]);
       view.camera = camera;
     }
   }
@@ -86,13 +82,13 @@ var HoloWeb = function (selector, config) {
         renderer.setScissor(view.x, view.y, view.width, view.height);
         renderer.setScissorTest(true);
         renderer.render(scene, camera);
-      }
-      else
+      } else {
         view.parts.forEach(function (part) {
           renderer.setScissor(Math.floor(part[0]), Math.floor(part[1]), Math.ceil(part[2]), Math.ceil(part[3]));
           renderer.setScissorTest(true);
           renderer.render(scene, camera);
         });
+      }
     }
   }
 }
