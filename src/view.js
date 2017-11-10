@@ -1,4 +1,17 @@
-var View = function (x, y, up, width, height, eye, fov, parts) {
+/**
+ * @constructs View - A View is mini configuration of both a camera position/rotation and a protion of the area of the canvas,
+ * where the captured projection by that camera of the scene will be rendered.
+ * @param {float} x - The position within the X axis of the initial point of the bbox - defaults to 0.
+ * @param {float} y - The position within the Y axis of the initial point of the bbox - defaults to 0.
+ * @param {float} width - The width of the bbox.
+ * @param {float} height - The height of the bbox.
+ * @param {float} up - An ordered triplet of integers - the rotation of the camera.
+ * @param {float} eye - An ordered triplet of integers - the position of the camera.
+ * @param {float} fov - Camera frustum vertical field of view.
+ * @param {float} parts - Smaller rectangular portions within the bbox.
+ */
+
+var View = function (x, y, width, height, up, eye, fov, parts) {
   this.x = x || 0;
   this.y = y || 0;
   this.up = up || [1, 0, 0];
