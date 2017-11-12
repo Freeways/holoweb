@@ -1,4 +1,4 @@
-import { configurator } from './configurator';
+import { Configurator } from './configurator';
 import { Scene, PerspectiveCamera, WebGLRenderer} from 'three';
 import { SupportWebGL } from './utils/check';
 
@@ -21,7 +21,8 @@ var HoloWeb = function (selector, config) {
   var H = this.selector.clientHeight;
   var W = this.selector.clientWidth;
   var renderer;
-  var views = configurator(this.config, {H: H, W: W});
+  var configurator = new Configurator(this.config);
+  var views = configurator.generateViews({H: H, W: W});
   var scene = new Scene();
   this.scene = scene;
   init(this.selector);
@@ -45,7 +46,7 @@ var HoloWeb = function (selector, config) {
     function resizeCanvas() {
       W = container.clientWidth;
       H = container.clientHeight;
-      views = configurator(this.config, {H: H, W: W});
+      views = configurator.generateViews({H: H, W: W});
       setupCamera();
       renderer.setSize(W, H);
     }

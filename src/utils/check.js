@@ -57,11 +57,10 @@ var SupportWebGL = function () {
 
 /**
  * @function GuessConfig Try to understand the configuration
- * @param {object} config - A configuration
- * @param {object} monitor - Width and height of the monitor 
+ * @param {object} config - A configuration 
  * @returns {object} Valid configuration
  */
-var GuessConfig = function (config, monitor) {
+var GuessConfig = function (config) {
   if (!config) {
     console.warn('The Configuration was not found, defaulting to pyramid display.');
     return CONFIG.pyramid;
@@ -95,8 +94,11 @@ var GuessConfig = function (config, monitor) {
     return c;
   }
 
+  /**
+   * @todo function.call returns views
+   */
   if (typeof config === "function")
-    return config(monitor);
+    return config();
 }
 
 /**
