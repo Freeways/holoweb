@@ -15,13 +15,13 @@
  * @namespace
  * @constant {object} CONFIG - Presets of common configurations
  * @property {object} model - A preset of a config
- * @property {number} model.faces - number of faces of the display device
+ * @property {integer} model.faces - number of faces of the display device
  * @property {boolean} model.trueReflection - if true displays the rear, left, front and right side on each
  * respective face, displays same rendering otherwise.
  * @property {boolean} model.reverseVertical - if true displays the rendering upside down
- * @property {number} model.height - height of the display device
- * @property {number} model.base - the width of the smalles suqare of the pyramid
- * @property {number} model.angle - degree angle between a face and the plateform
+ * @property {float} model.height - height of the display device
+ * @property {float} model.base - the width of the smalles suqare of the pyramid
+ * @property {float} model.angle - degree angle between a face and the plateform
  * @property {integer} model.precision - how offen the views is sliced to parts, the more parts you have
  * the sharper rendering area is provided and the least performent.
  * @todo Add more common configurations
@@ -39,7 +39,8 @@ var CONFIG = {
 };
 
 /**
- * @function SupportWebGL - Detect either or not the runtime support WebGL
+ * @function SupportWebGL
+ * @description Detect either or not the runtime support WebGL
  * @returns {boolean}
  */
 var SupportWebGL = function () {
@@ -56,7 +57,8 @@ var SupportWebGL = function () {
 }
 
 /**
- * @function GuessConfig Try to understand the configuration
+ * @function GuessConfig
+ * @description Try to understand the configuration
  * @param {object} config - A configuration 
  * @returns {object} Valid configuration
  */
@@ -103,11 +105,12 @@ var GuessConfig = function (config) {
 
 /**
  * WebGL dosen't allow rendering on a negative width or height area.
- * @function coord2canvas - Trasforms 2 boundary points (opposit corners) a renderable area.
- * @param {number} x1 - Boundry 1 position within the X axis
- * @param {number} y1 - Boundry 1 position within the Y axis
- * @param {number} x2 - Boundry 2 position within the X axis
- * @param {number} y2 - Boundry 2 position within the Y axis
+ * @function coord2canvas
+ * @description Trasforms 2 boundary points (opposit corners) a renderable area.
+ * @param {float} x1 - Boundry 1 position within the X axis
+ * @param {float} y1 - Boundry 1 position within the Y axis
+ * @param {float} x2 - Boundry 2 position within the X axis
+ * @param {float} y2 - Boundry 2 position within the Y axis
  * @returns {Array} top left point, width and height
  */
 function Coord2Canvas(x1, y1, x2, y2) {

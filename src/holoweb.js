@@ -1,13 +1,13 @@
 import { Configurator } from './configurator';
 import { Scene, PerspectiveCamera, WebGLRenderer} from 'three';
-import { SupportWebGL } from './utils/check';
+import { SupportWebGL } from './utils/index';
 
 
 /**
  * Holoweb is the main prototype.
  * @constructs Holoweb - Scene camera and views for rendering
  * @param {HTMLElement} selector - The DOM element where the canvas will be rendered
- * @param {object} config - Configuration of the setup, {@link check|read more about configuration} 
+ * @param {object} config - Configuration of the setup, {@link CONFIG|read more about configuration} 
  */
 
 

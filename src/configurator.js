@@ -1,10 +1,10 @@
 import { View } from './view';
-import { GuessConfig, Coord2Canvas } from './utils/check';
+import { GuessConfig, Coord2Canvas } from './utils/index';
 
 /**
  * @constructs Configurator - Generate best fitting views for a giving reflection device and a monitor
- * @param {object} config - Configuration of the setup, {@link check|read more about configuration}
- * @description monitor and views
+ * @param {object} config - Configuration of the setup, {@link CONFIG|read more about configuration}
+ * <pre>
  * +----+---------------------------------+----+
  * |    |__                          __|  |    |
  * |    |  |__                    __|     |    |
@@ -19,22 +19,26 @@ import { GuessConfig, Coord2Canvas } from './utils/check';
  * |    |   __|                        |__|    |
  * |    |  |                              |    |
  * +----+---------------------------------+----+
- * @returns {Array.<View>} - {@link view|read more about Views}
+ * </pre>
+ * @description monitor and views
  */
 var Configurator = function (config) {
   this.config = GuessConfig(config);
 
   this.step = Math.PI / this.config.faces;
-  /**
-   * @todo initialise diagonals with dummy values for code constentancy
-   */
-
+  // Initializing with dummy vlaues just for code consistency 
+  this.bigDiagonal = 280;
+  this.smallDiagonal = 70;
 }
 
 Object.assign(Configurator.prototype, {
   
   /**
-   * 
+   * @function generateViews 
+   * @description Generate views for a giving monitor
+   * @memberof Configurator
+   * @param {object} monitor - Width and height of a selection
+   * @returns {Array.<View>} Array of views
    */
   generateViews: function (monitor) {
     var pSide = this.config.height * Math.sin(this.config.angle * Math.PI / 180),
@@ -67,7 +71,12 @@ Object.assign(Configurator.prototype, {
   },
 
   /**
-   * 
+   * @function assignParts
+   * @description Calculate view's parts
+   * @memberof Configurator
+   * @param {integer} index - index of the processed view
+   * @param {object} monitor - Width and height of a selection
+   * @returns {Array} Array of parts
    */
   assignParts: function (index, monitor) {
     if (!index)

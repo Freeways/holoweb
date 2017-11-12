@@ -5,10 +5,10 @@
  * @param {float} y - The position within the Y axis of the initial point of the bbox - defaults to 0.
  * @param {float} width - The width of the bbox.
  * @param {float} height - The height of the bbox.
- * @param {float} up - An ordered triplet of integers - the rotation of the camera.
- * @param {float} eye - An ordered triplet of integers - the position of the camera.
+ * @param {array} up - An ordered triplet of integers - the rotation of the camera.
+ * @param {array} eye - An ordered triplet of integers - the position of the camera.
  * @param {float} fov - Camera frustum vertical field of view.
- * @param {float} parts - Smaller rectangular portions within the bbox.
+ * @param {Array} parts - Smaller rectangular portions within the bbox.
  */
 
 var View = function (x, y, width, height, up, eye, fov, parts) {
