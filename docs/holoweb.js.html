@@ -26,16 +26,16 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { configurator } from './configurator';
+            <pre class="prettyprint source linenums"><code>import { Configurator } from './configurator';
 import { Scene, PerspectiveCamera, WebGLRenderer} from 'three';
-import { SupportWebGL } from './utils/check';
+import { SupportWebGL } from './utils/index';
 
 
 /**
  * Holoweb is the main prototype.
  * @constructs Holoweb - Scene camera and views for rendering
  * @param {HTMLElement} selector - The DOM element where the canvas will be rendered
- * @param {object} config - Configuration of the setup, {@link check|read more about configuration} 
+ * @param {object} config - Configuration of the setup, {@link CONFIG|read more about configuration} 
  */
 
 
@@ -46,55 +46,41 @@ var HoloWeb = function (selector, config) {
   this.selector = selector instanceof Element ? selector : window.document.body;
   this.config = config;
 
+  var H = this.selector.clientHeight;
+  var W = this.selector.clientWidth;
   var renderer;
-  var views = configurator(this.config, {H: this.selector.clientHeight, W: this.selector.clientWidth});
+  var configurator = new Configurator(this.config);
+  var views = configurator.generateViews({W: this.selector.clientWidth, H: this.selector.clientHeight});
   var scene = new Scene();
   this.scene = scene;
   init(this.selector);
-  renderer.setSize(W, H);
+  renderer.setSize(this.selector.clientWidth, this.selector.clientHeight);
   animate();
-
-  this.add = function (mesh) {
-    return this.scene.add(mesh);
-  }
-  this.remove = function (mesh) {
-    return this.scene.remove(mesh);
-  }
-  this.clear = function () {
-    that = this;
-    that.scene.children.forEach(function (object) {
-      that.remove(object);
-    });
-  }
 
   function init(container) {
     function resizeCanvas() {
-      W = container.clientWidth;
-      H = container.clientHeight;
-      views = configurator(this.config, {H: H, W: W});
+      views = configurator.generateViews({W: container.clientWidth, H: container.clientHeight});
       setupCamera();
-      renderer.setSize(W, H);
+      renderer.setSize(container.clientWidth, container.clientHeight);
     }
     setupCamera();
     renderer = new WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(W, H);
+    renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
     window.onresize = resizeCanvas;
   }
+
   function setupCamera() {
     for (var i = 0; i &lt; views.length; ++i) {
       var view = views[i];
       var camera = new PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 1, 10000);
-      camera.position.x = view.eye[ 0 ];
-      camera.position.y = view.eye[ 1 ];
-      camera.position.z = view.eye[ 2 ];
-      camera.up.x = view.up[ 0 ];
-      camera.up.y = view.up[ 1 ];
-      camera.up.z = view.up[ 2 ];
+      camera.position.set(view.eye[0], view.eye[1], view.eye[2]);
+      camera.up.set(view.up[0], view.up[1], view.up[2]);
       view.camera = camera;
     }
   }
+
   function animate() {
     requestAnimationFrame(animate);
     render();
@@ -104,7 +90,7 @@ var HoloWeb = function (selector, config) {
       var view = views[i];
       var camera = view.camera;
       camera.lookAt(scene.position);
-      //renderer.setClearColor(4304 + 4190000 * i, 0.5);
+      renderer.setClearColor(4304 + 4190000 * i, 0.5);
       renderer.setViewport(view.x, view.y, view.width, view.height);
       camera.aspect = 1;
       camera.updateProjectionMatrix();
@@ -112,16 +98,55 @@ var HoloWeb = function (selector, config) {
         renderer.setScissor(view.x, view.y, view.width, view.height);
         renderer.setScissorTest(true);
         renderer.render(scene, camera);
-      }
-      else
+      } else {
         view.parts.forEach(function (part) {
           renderer.setScissor(Math.floor(part[0]), Math.floor(part[1]), Math.ceil(part[2]), Math.ceil(part[3]));
           renderer.setScissorTest(true);
           renderer.render(scene, camera);
         });
+      }
     }
   }
 }
+
+Object.assign(HoloWeb.prototype, {
+
+  /**
+  * @function add 
+  * @description Adds an Object to the scene 
+  * @memberof Holoweb
+  * @param {THREE.Object3D} obj - Three Object3D
+  * @returns {THREE.Scene}
+  */
+  add: function (obj) {
+    return this.scene.add(obj);
+  },
+
+  /**
+  * @function remove 
+  * @description Removes an Object from the scene 
+  * @memberof Holoweb
+  * @param {THREE.Object3D} obj - Three Object3D
+  * @returns {THREE.Object3D}
+  */
+  remove: function (obj) {
+    this.scene.remove(obj);
+    return obj;
+  },
+
+  /**
+  * @function clear 
+  * @description Removes all Objects from the scene 
+  * @memberof Holoweb
+  */
+  clear: function () {
+    var that = this;
+    that.scene.children.forEach(function (object) {
+      that.remove(object);
+    });
+  }
+})
+
 export { HoloWeb };
 </code></pre>
         </article>
@@ -133,13 +158,13 @@ export { HoloWeb };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Holoweb.html">Holoweb</a></li><li><a href="View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIG">CONFIG</a></li><li><a href="global.html#configurator-Generatebestfittingviewsforagivingreflectiondeviceandamonitor">configurator - Generate best fitting views for a giving reflection device and a monitor</a></li><li><a href="global.html#coord2canvas-Trasforms2boundarypoints(oppositcorners)arenderablearea.">coord2canvas - Trasforms 2 boundary points (opposit corners) a renderable area.</a></li><li><a href="global.html#GuessConfigTrytounderstandtheconfiguration">GuessConfig Try to understand the configuration</a></li><li><a href="global.html#SupportWebGL-DetecteitherornottheruntimesupportWebGL">SupportWebGL - Detect either or not the runtime support WebGL</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Configurator.html">Configurator</a></li><li><a href="Holoweb.html">Holoweb</a></li><li><a href="View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIG">CONFIG</a></li><li><a href="global.html#coord2canvas">coord2canvas</a></li><li><a href="global.html#GuessConfig">GuessConfig</a></li><li><a href="global.html#SupportWebGL">SupportWebGL</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Fri Nov 10 2017 15:20:53 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Nov 13 2017 14:30:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

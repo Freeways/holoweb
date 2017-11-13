@@ -5,8 +5,8 @@
  * @param {float} y - The position within the Y axis of the initial point of the bbox - defaults to 0.
  * @param {float} width - The width of the bbox.
  * @param {float} height - The height of the bbox.
- * @param {array} up - An ordered triplet of integers - the rotation of the camera.
- * @param {array} eye - An ordered triplet of integers - the position of the camera.
+ * @param {Array} up - An ordered triplet of integers - the rotation of the camera.
+ * @param {Array} eye - An ordered triplet of integers - the position of the camera.
  * @param {float} fov - Camera frustum vertical field of view.
  * @param {Array} parts - Smaller rectangular portions within the bbox.
  */

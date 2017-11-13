@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: utils/check.js</title>
+    <title>JSDoc: Source: utils/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: utils/check.js</h1>
+    <h1 class="page-title">Source: utils/index.js</h1>
 
     
 
@@ -43,13 +43,13 @@
  * @namespace
  * @constant {object} CONFIG - Presets of common configurations
  * @property {object} model - A preset of a config
- * @property {number} model.faces - number of faces of the display device
+ * @property {integer} model.faces - number of faces of the display device
  * @property {boolean} model.trueReflection - if true displays the rear, left, front and right side on each
  * respective face, displays same rendering otherwise.
  * @property {boolean} model.reverseVertical - if true displays the rendering upside down
- * @property {number} model.height - height of the display device
- * @property {number} model.base - the width of the smalles suqare of the pyramid
- * @property {number} model.angle - degree angle between a face and the plateform
+ * @property {float} model.height - height of the display device
+ * @property {float} model.base - the width of the smalles suqare of the pyramid
+ * @property {float} model.angle - degree angle between a face and the plateform
  * @property {integer} model.precision - how offen the views is sliced to parts, the more parts you have
  * the sharper rendering area is provided and the least performent.
  * @todo Add more common configurations
@@ -67,30 +67,30 @@ var CONFIG = {
 };
 
 /**
- * @function SupportWebGL - Detect either or not the runtime support WebGL
+ * @function SupportWebGL
+ * @description Detect either or not the runtime support WebGL
  * @returns {boolean}
  */
 var SupportWebGL = function () {
-  this.canvas = document.createElement('canvas');
-  var ctx = this.canvas.getContext('webgl2');
+  var canvas = window.document.createElement('canvas');
+  var ctx = canvas.getContext('webgl2');
   var isWebGL2 = !!ctx;
   if (isWebGL2)
     return true;
   else
-    ctx = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
-  delete this.canvas;
+    ctx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
   if (!ctx)
     return false;
   return true;
 }
 
 /**
- * @function GuessConfig Try to understand the configuration
- * @param {object} config - A configuration
- * @param {object} monitor - Width and height of the monitor 
+ * @function GuessConfig
+ * @description Try to understand the configuration
+ * @param {object} config - A configuration 
  * @returns {object} Valid configuration
  */
-var GuessConfig = function (config, monitor) {
+var GuessConfig = function (config) {
   if (!config) {
     console.warn('The Configuration was not found, defaulting to pyramid display.');
     return CONFIG.pyramid;
@@ -124,17 +124,21 @@ var GuessConfig = function (config, monitor) {
     return c;
   }
 
+  /**
+   * @todo function.call returns views
+   */
   if (typeof config === "function")
-    return config(monitor);
+    return config();
 }
 
 /**
  * WebGL dosen't allow rendering on a negative width or height area.
- * @function coord2canvas - Trasforms 2 boundary points (opposit corners) a renderable area.
- * @param {number} x1 - Boundry 1 position within the X axis
- * @param {number} y1 - Boundry 1 position within the Y axis
- * @param {number} x2 - Boundry 2 position within the X axis
- * @param {number} y2 - Boundry 2 position within the Y axis
+ * @function coord2canvas
+ * @description Trasforms 2 boundary points (opposit corners) a renderable area.
+ * @param {float} x1 - Boundry 1 position within the X axis
+ * @param {float} y1 - Boundry 1 position within the Y axis
+ * @param {float} x2 - Boundry 2 position within the X axis
+ * @param {float} y2 - Boundry 2 position within the Y axis
  * @returns {Array} top left point, width and height
  */
 function Coord2Canvas(x1, y1, x2, y2) {
@@ -165,13 +169,13 @@ export { SupportWebGL, GuessConfig, Coord2Canvas };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Holoweb.html">Holoweb</a></li><li><a href="View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIG">CONFIG</a></li><li><a href="global.html#configurator-Generatebestfittingviewsforagivingreflectiondeviceandamonitor">configurator - Generate best fitting views for a giving reflection device and a monitor</a></li><li><a href="global.html#coord2canvas-Trasforms2boundarypoints(oppositcorners)arenderablearea.">coord2canvas - Trasforms 2 boundary points (opposit corners) a renderable area.</a></li><li><a href="global.html#GuessConfigTrytounderstandtheconfiguration">GuessConfig Try to understand the configuration</a></li><li><a href="global.html#SupportWebGL-DetecteitherornottheruntimesupportWebGL">SupportWebGL - Detect either or not the runtime support WebGL</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Configurator.html">Configurator</a></li><li><a href="Holoweb.html">Holoweb</a></li><li><a href="View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIG">CONFIG</a></li><li><a href="global.html#coord2canvas">coord2canvas</a></li><li><a href="global.html#GuessConfig">GuessConfig</a></li><li><a href="global.html#SupportWebGL">SupportWebGL</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Fri Nov 10 2017 15:20:53 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Nov 13 2017 14:30:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

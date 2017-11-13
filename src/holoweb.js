@@ -22,41 +22,27 @@ var HoloWeb = function (selector, config) {
   var W = this.selector.clientWidth;
   var renderer;
   var configurator = new Configurator(this.config);
-  var views = configurator.generateViews({H: H, W: W});
+  var views = configurator.generateViews({W: this.selector.clientWidth, H: this.selector.clientHeight});
   var scene = new Scene();
   this.scene = scene;
   init(this.selector);
-  renderer.setSize(W, H);
+  renderer.setSize(this.selector.clientWidth, this.selector.clientHeight);
   animate();
-
-  this.add = function (mesh) {
-    return this.scene.add(mesh);
-  }
-  this.remove = function (mesh) {
-    return this.scene.remove(mesh);
-  }
-  this.clear = function () {
-    that = this;
-    that.scene.children.forEach(function (object) {
-      that.remove(object);
-    });
-  }
 
   function init(container) {
     function resizeCanvas() {
-      W = container.clientWidth;
-      H = container.clientHeight;
-      views = configurator.generateViews({H: H, W: W});
+      views = configurator.generateViews({W: container.clientWidth, H: container.clientHeight});
       setupCamera();
-      renderer.setSize(W, H);
+      renderer.setSize(container.clientWidth, container.clientHeight);
     }
     setupCamera();
     renderer = new WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(W, H);
+    renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
     window.onresize = resizeCanvas;
   }
+
   function setupCamera() {
     for (var i = 0; i < views.length; ++i) {
       var view = views[i];
@@ -66,6 +52,7 @@ var HoloWeb = function (selector, config) {
       view.camera = camera;
     }
   }
+
   function animate() {
     requestAnimationFrame(animate);
     render();
@@ -93,4 +80,43 @@ var HoloWeb = function (selector, config) {
     }
   }
 }
+
+Object.assign(HoloWeb.prototype, {
+
+  /**
+  * @function add 
+  * @description Adds an Object to the scene 
+  * @memberof Holoweb
+  * @param {THREE.Object3D} obj - Three Object3D
+  * @returns {THREE.Scene}
+  */
+  add: function (obj) {
+    return this.scene.add(obj);
+  },
+
+  /**
+  * @function remove 
+  * @description Removes an Object from the scene 
+  * @memberof Holoweb
+  * @param {THREE.Object3D} obj - Three Object3D
+  * @returns {THREE.Object3D}
+  */
+  remove: function (obj) {
+    this.scene.remove(obj);
+    return obj;
+  },
+
+  /**
+  * @function clear 
+  * @description Removes all Objects from the scene 
+  * @memberof Holoweb
+  */
+  clear: function () {
+    var that = this;
+    that.scene.children.forEach(function (object) {
+      that.remove(object);
+    });
+  }
+})
+
 export { HoloWeb };
