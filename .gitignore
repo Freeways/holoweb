@@ -1,4 +1,10 @@
-node_modules/
+# builds
 dist/holoweb.js
+dist/holoweb.min.js
 
-nbproject/
+# npm related
+npm-debug.log
+node_modules/
+
+# test builds
+tmp/
