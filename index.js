@@ -1,1 +1,5 @@
-var HoloWeb = window.HoloWeb = require('./src/holoweb');
+import { HoloWeb } from './src/holoweb';
+import * as three from 'three';
+
+window.THREE = three;
+window.HoloWeb = HoloWeb;
