@@ -25,14 +25,16 @@ import { GuessConfig, Coord2Canvas } from './utils/index';
 var Configurator = function (config) {
   this.config = GuessConfig(config);
 
-  this.step = Math.PI / this.config.faces;
+  var offset = +!this.config.reverseVertical * 2 * Math.PI;
+  this.step = (offset + Math.PI) / this.config.faces;
+  
   // Initializing with dummy vlaues just for code consistency 
   this.bigDiagonal = 280;
   this.smallDiagonal = 70;
 }
 
 Object.assign(Configurator.prototype, {
-  
+
   /**
    * @function generateViews 
    * @description Generate views for a giving monitor
@@ -41,31 +43,22 @@ Object.assign(Configurator.prototype, {
    * @returns {Array.<View>} Array of views
    */
   generateViews: function (monitor) {
-    var pSide = this.config.height * Math.sin(this.config.angle * Math.PI / 180),
-      mSide = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - this.config.base) / 2,
-      optimium = pSide < mSide ? pSide : mSide,
+    var optimium = this.calculateViewHeight(monitor),
       height = 2 * optimium + this.config.base,
       width = height,
       x = monitor.W / 2 - this.config.base / 2 - optimium,
-      y = monitor.H / 2 - this.config.base / 2 - optimium;
-    this.bigDiagonal = Math.sqrt((optimium * optimium) + (optimium * optimium));
-    this.smallDiagonal = Math.sqrt((this.config.base / 2) * (this.config.base / 2) + (this.config.base / 2) * (this.config.base / 2));
+      y = x + (monitor.H - monitor.W) / 2;
+    this.bigDiagonal = Math.sqrt(2 * Math.pow(optimium, 2));
+    this.smallDiagonal = Math.sqrt(2 * Math.pow(this.config.base / 2, 2));
 
     var views = [];
     for (var i = 0; i < this.config.faces; i++) {
       var cx = Math.round(Math.sin(i * 2 * this.step) * 100) / 100;
       var cy = Math.round(Math.cos(i * 2 * this.step) * 100) / 100;
       var parts = this.assignParts(i, monitor);
-      var up = [], eye = [];
-      if (this.config.trueReflection) {
-        up = [-cx, cy, 0];
-        eye = [cy * 1800, 0, cx * 1800];
-      } else {
-        up = [-cx, cy, 0];
-        eye = [0, 500, 1800];
-      }
-      var fov = 60;
-      views.push(new View(x, y, width, height, up, eye, fov, parts));
+      var up = [cx, cy, 0];
+      var eye = this.config.trueReflection ? [cy * 1800, 0, cx * 1800] : [0, 500, 1800];
+      views.push(new View(x, y, width, height, up, eye, this.config.fov, parts));
     }
     return views;
   },
@@ -93,6 +86,19 @@ Object.assign(Configurator.prototype, {
       )
     }
     return parts;
+  },
+
+  /**
+   * @function calculateViewHeight
+   * @description Calculate the max posible height of a view from the available monitor and the reflexion device
+   * @memberof Configurator
+   * @param {object} monitor - Width and height of a selection
+   * @returns {float} Height of view
+   */
+  calculateViewHeight: function (monitor) {
+    var projected = this.config.height * Math.sin(this.config.angle * Math.PI / 180);
+    var available = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - this.config.base) / 2;
+    return projected < available ? projected : available;
   }
 })
 
