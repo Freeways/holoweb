@@ -29,8 +29,8 @@
 var CONFIG = {
   pyramid: {
     faces: 4,
-    trueReflection: 0,
-    reverseVertical: 1,
+    trueReflection: false,
+    reverseVertical: false,
     height: 400,
     base: 100,
     angle: 45,
@@ -73,7 +73,7 @@ var GuessConfig = function (config) {
       console.warn('The Configuration `' + config + '` was not found, defaulting to pyramid display.');
       return CONFIG.pyramid;
     } else {
-      console.info('Using `' + config +'` configuration!');
+      console.info('Using `' + config + '` configuration!');
       return CONFIG[config];
     }
   }
@@ -83,15 +83,15 @@ var GuessConfig = function (config) {
     if (!config.model) {
       c = CONFIG.pyramid;
     } else {
-      if(!CONFIG[config.model]) {
+      if (!CONFIG[config.model]) {
         console.warn('The Configuration model `' + config.model + '` was not found, defaulting to pyramid display.');
         c = CONFIG.pyramid;
-      }else {
+      } else {
         c = CONFIG[config.model];
       }
     }
     for (var key in c) {
-      c[key] = config[key] ? config[key] : c[key];
+      c[key] = (typeof config[key] !== 'undefined') ? config[key] : c[key];
     }
     return c;
   }

@@ -1,5 +1,5 @@
 import { Configurator } from './configurator';
-import { Scene, PerspectiveCamera, WebGLRenderer} from 'three';
+import { Scene, PerspectiveCamera, WebGLRenderer } from 'three';
 import { SupportWebGL } from './utils/index';
 
 
@@ -12,7 +12,7 @@ import { SupportWebGL } from './utils/index';
 
 
 var HoloWeb = function (selector, config) {
-  if(!SupportWebGL())
+  if (!SupportWebGL())
     return console.error("your browser does not support WebGL");
 
   this.selector = selector instanceof Element ? selector : window.document.body;
@@ -22,7 +22,7 @@ var HoloWeb = function (selector, config) {
   var W = this.selector.clientWidth;
   var renderer;
   var configurator = new Configurator(this.config);
-  var views = configurator.generateViews({W: this.selector.clientWidth, H: this.selector.clientHeight});
+  var views = configurator.generateViews({ W: this.selector.clientWidth, H: this.selector.clientHeight });
   var scene = new Scene();
   this.scene = scene;
   init(this.selector);
@@ -31,12 +31,12 @@ var HoloWeb = function (selector, config) {
 
   function init(container) {
     function resizeCanvas() {
-      views = configurator.generateViews({W: container.clientWidth, H: container.clientHeight});
+      views = configurator.generateViews({ W: container.clientWidth, H: container.clientHeight });
       setupCamera();
       renderer.setSize(container.clientWidth, container.clientHeight);
     }
     setupCamera();
-    renderer = new WebGLRenderer({antialias: true});
+    renderer = new WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
