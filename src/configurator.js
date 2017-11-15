@@ -32,7 +32,7 @@ var Configurator = function (config) {
 }
 
 Object.assign(Configurator.prototype, {
-  
+
   /**
    * @function generateViews 
    * @description Generate views for a giving monitor
@@ -41,15 +41,13 @@ Object.assign(Configurator.prototype, {
    * @returns {Array.<View>} Array of views
    */
   generateViews: function (monitor) {
-    var pSide = this.config.height * Math.sin(this.config.angle * Math.PI / 180),
-      mSide = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - this.config.base) / 2,
-      optimium = pSide < mSide ? pSide : mSide,
+    var optimium = this.calculateViewHeight(monitor),
       height = 2 * optimium + this.config.base,
       width = height,
       x = monitor.W / 2 - this.config.base / 2 - optimium,
-      y = monitor.H / 2 - this.config.base / 2 - optimium;
-    this.bigDiagonal = Math.sqrt((optimium * optimium) + (optimium * optimium));
-    this.smallDiagonal = Math.sqrt((this.config.base / 2) * (this.config.base / 2) + (this.config.base / 2) * (this.config.base / 2));
+      y = x + (monitor.H - monitor.W) / 2;
+    this.bigDiagonal = Math.sqrt(2 * Math.pow(optimium, 2));
+    this.smallDiagonal = Math.sqrt(2 * Math.pow(this.config.base / 2, 2));
 
     var views = [];
     for (var i = 0; i < this.config.faces; i++) {
@@ -91,6 +89,19 @@ Object.assign(Configurator.prototype, {
       )
     }
     return parts;
+  },
+
+  /**
+   * @function calculateViewHeight
+   * @description Calculate the max posible height of a view from the available monitor and the reflexion device
+   * @memberof Configurator
+   * @param {object} monitor - Width and height of a selection
+   * @returns {float} Height of view
+   */
+  calculateViewHeight: function (monitor) {
+    var projected = this.config.height * Math.sin(this.config.angle * Math.PI / 180);
+    var available = ((monitor.H * (monitor.H < monitor.W) || monitor.W) - this.config.base) / 2;
+    return projected < available ? projected : available;
   }
 })
 
