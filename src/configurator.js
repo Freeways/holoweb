@@ -25,7 +25,7 @@ import { GuessConfig, Coord2Canvas } from './utils/index';
 var Configurator = function (config) {
   this.config = GuessConfig(config);
 
-  this.step = Math.PI / this.config.faces;
+  this.step = 3 * Math.PI / this.config.faces;
   // Initializing with dummy vlaues just for code consistency 
   this.bigDiagonal = 280;
   this.smallDiagonal = 70;
@@ -56,12 +56,10 @@ Object.assign(Configurator.prototype, {
       var cx = Math.round(Math.sin(i * 2 * this.step) * 100) / 100;
       var cy = Math.round(Math.cos(i * 2 * this.step) * 100) / 100;
       var parts = this.assignParts(i, monitor);
-      var up = [], eye = [];
+      var up = [cx, cy, 0], eye = [];
       if (this.config.trueReflection) {
-        up = [-cx, cy, 0];
         eye = [cy * 1800, 0, cx * 1800];
       } else {
-        up = [-cx, cy, 0];
         eye = [0, 500, 1800];
       }
       var fov = 60;
