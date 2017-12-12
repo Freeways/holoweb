@@ -56,7 +56,7 @@ Object.assign(Configurator.prototype, {
       var cx = Math.round(Math.sin(i * 2 * this.step) * 100) / 100;
       var cy = Math.round(Math.cos(i * 2 * this.step) * 100) / 100;
       var parts = this.assignParts(i, monitor);
-      var up = [cx, cy, 0];
+      var up = this.config.trueReflection ? [Math.abs(cx), cy, 0] : [cx, cy, 0];
       var eye = this.config.trueReflection ? [cy * 1800, 0, cx * 1800] : [0, 500, 1800];
       views.push(new View(x, y, width, height, up, eye, this.config.fov, parts));
     }
