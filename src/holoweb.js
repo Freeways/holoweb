@@ -22,7 +22,7 @@ var HoloWeb = function (selector, config) {
   var W = this.selector.clientWidth;
   var renderer;
   var configurator = new Configurator(this.config);
-  var views = configurator.generateViews({ W: this.selector.clientWidth, H: this.selector.clientHeight });
+  var views = configurator.generateViews({ W: this.selector.clientWidth, H: this.selector.clientHeight }); console.log(views)
   var scene = new Scene();
   this.scene = scene;
   init(this.selector);
