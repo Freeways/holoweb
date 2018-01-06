@@ -48,8 +48,8 @@ Object.assign(Configurator.prototype, {
       width = height,
       x = monitor.W / 2 - this.config.base / 2 - optimium,
       y = x + (monitor.H - monitor.W) / 2;
-    this.bigDiagonal = Math.sqrt(2 * optimium ** 2);
-    this.smallDiagonal = Math.sqrt(2 * (this.config.base / 2) ** 2);
+    this.bigDiagonal = Math.sqrt(2 * optimium * optimium);
+    this.smallDiagonal = Math.sqrt(2 * (this.config.base / 2) * (this.config.base / 2));
 
     var views = [];
     for (var i = 0; i < this.config.faces; i++) {

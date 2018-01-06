@@ -12,7 +12,13 @@ const config = {
     rules: [
       { test: /\.js$/, include: [path.resolve(__dirname, 'src')], }
     ]
-  }
+  },
+  devtool: "eval-source-map"
 };
+
+if (process.env.NODE_ENV === "production") {
+  config.output.filename = 'holoweb.min.js';
+  config.devtool = "";
+}
 
 module.exports = config;
