@@ -130,4 +130,4 @@ function Coord2Canvas(x1, y1, x2, y2) {
   }
   return [Math.floor(x1), Math.floor(y1), Math.ceil(x2), Math.ceil(y2)];
 }
-export { SupportWebGL, GuessConfig, Coord2Canvas };
+export { SupportWebGL, GuessConfig, Coord2Canvas, CONFIG };

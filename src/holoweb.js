@@ -62,7 +62,6 @@ var HoloWeb = function (selector, config) {
       var view = views[i];
       var camera = view.camera;
       camera.lookAt(scene.position);
-      renderer.setClearColor(4304 + 4190000 * i, 0.5);
       renderer.setViewport(view.x, view.y, view.width, view.height);
       camera.aspect = 1;
       camera.updateProjectionMatrix();
