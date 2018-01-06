@@ -7,7 +7,7 @@ var configuratorTests = function () {
     describe('configure', function () {
       describe('Without config', function () {
         var configurator = new Configurator(null);
-        it('shoudl default to pyramid config', function(){
+        it('should default to pyramid config', function(){
           configurator.config.should.equal(CONFIG.pyramid);
         });
         var views = configurator.generateViews({ W: 1024, H: 800 });
