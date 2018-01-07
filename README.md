@@ -1,5 +1,10 @@
 # HoloWeb
 
+[![Latest NPM release][npm-badge]][npm-badge-url]
+[![License][license-badge]][license-badge-url]
+[![Dependencies][dependencies-badge]][dependencies-badge-url]
+[![Dev Dependencies][devDependencies-badge]][devDependencies-badge-url]
+
 ## Hologram Web Framework
 This project aims to create a lightweight, minimalist and easy to use framework for Holograms on webpage.
 
@@ -33,3 +38,11 @@ window.onmousemove = function (e) {
     mesh.position.y = 3 * (window.innerHeight / 2 - e.clientY);
 }
 ```
+[npm-badge]: https://img.shields.io/npm/v/holoweb.js.svg
+[npm-badge-url]: https://www.npmjs.com/package/holoweb.js
+[license-badge]: https://img.shields.io/npm/l/holoweb.js.svg
+[license-badge-url]: ./LICENSE
+[dependencies-badge]: https://img.shields.io/david/Freeways/holoweb.svg
+[dependencies-badge-url]: https://david-dm.org/Freeways/holoweb
+[devDependencies-badge]: https://img.shields.io/david/dev/Freeways/holoweb.svg
+[devDependencies-badge-url]: https://david-dm.org/Freeways/holoweb?type=dev
