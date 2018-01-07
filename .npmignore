@@ -1,0 +1,6 @@
+# npm related
+npm-debug.log
+node_modules/
+
+# test builds
+tmp/
